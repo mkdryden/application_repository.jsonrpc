@@ -22,9 +22,9 @@
 import unittest
 import jsonrpc
 
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
-from StringIO import StringIO
+from io import StringIO
 
 class  TestProxy(unittest.TestCase):
 
@@ -34,15 +34,15 @@ class  TestProxy(unittest.TestCase):
     
     def setUp(self):
         self.postdata=""
-        self.urllib_openurl = urllib.urlopen
-        urllib.urlopen = self.urlopen
+        self.urllib_openurl = urllib.request.urlopen
+        urllib.request.urlopen = self.urlopen
         
     def tearDown(self):
-        urllib.urlopen = self.urllib_openurl
+        urllib.request.urlopen = self.urllib_openurl
 
     def test_ProvidesProxyMethod(self):
         s = jsonrpc.ServiceProxy("http://localhost/")
-        self.assert_(callable(s.echo))
+        self.assertTrue(callable(s.echo))
 
     def test_MethodCallCallsService(self):
         
@@ -50,12 +50,12 @@ class  TestProxy(unittest.TestCase):
 
         self.respdata='{"result":"foobar","error":null,"id":""}'
         echo = s.echo("foobar")
-        self.assertEquals(self.postdata, jsonrpc.dumps({"method":"echo", 'params':['foobar'], 'id':'jsonrpc'}))
-        self.assertEquals(echo, 'foobar')
+        self.assertEqual(self.postdata, jsonrpc.dumps({"method":"echo", 'params':['foobar'], 'id':'jsonrpc'}))
+        self.assertEqual(echo, 'foobar')
 
         self.respdata='{"result":null,"error":"MethodNotFound","id":""}'
         try:
             s.echo("foobar")
-        except jsonrpc.JSONRPCException,e:
-            self.assertEquals(e.error, "MethodNotFound")
+        except jsonrpc.JSONRPCException as e:
+            self.assertEqual(e.error, "MethodNotFound")
             

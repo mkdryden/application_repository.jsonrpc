@@ -67,9 +67,9 @@ class  TestModPyWrapper(unittest.TestCase):
         pass
 
     def test_runHandler(self):
-        from StringIO import StringIO
+        from io import StringIO
        
-        json=u'{"method":"echo","params":["foobar"], "id":""}'
+        json='{"method":"echo","params":["foobar"], "id":""}'
         fin=StringIO(json)
         fout=StringIO()
         req = ApacheRequestMockup(__file__ , fin, fout)
@@ -78,21 +78,21 @@ class  TestModPyWrapper(unittest.TestCase):
 
         data = fout.getvalue()
 
-        self.assertEquals(jsonrpc.loads(data), {"result":"foobar", "error":None, "id":""})
+        self.assertEqual(jsonrpc.loads(data), {"result":"foobar", "error":None, "id":""})
 
     def test_ServiceImplementationNotFound(self):
-        from StringIO import StringIO
+        from io import StringIO
        
-        json=u'{"method":"echo","params":["foobar"], "id":""}'
+        json='{"method":"echo","params":["foobar"], "id":""}'
         fin=StringIO(json)
         fout=StringIO()
         req = ApacheRequestMockup("foobar" , fin, fout)
 
         rslt = jsonrpc.handler(req)
-        self.assertEquals(rslt, "OK")
+        self.assertEqual(rslt, "OK")
         data = fout.getvalue()
 
-        self.assertEquals(jsonrpc.loads(data), {u'id': '', u'result': None, u'error': {u'message': '', u'name': u'ServiceImplementaionNotFound'}} )
+        self.assertEqual(jsonrpc.loads(data), {'id': '', 'result': None, 'error': {'message': '', 'name': 'ServiceImplementaionNotFound'}} )
 
         
 

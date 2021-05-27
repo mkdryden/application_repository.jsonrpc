@@ -37,9 +37,9 @@ class  TestCGIWrapper(unittest.TestCase):
         pass
 
     def test_runCGIHandler(self):
-        from StringIO import StringIO
+        from io import StringIO
 
-        json=u'{"method":"echo","params":["foobar"], "id":""}'
+        json='{"method":"echo","params":["foobar"], "id":""}'
         fin=StringIO(json)
         fout=StringIO()
         
@@ -51,5 +51,5 @@ class  TestCGIWrapper(unittest.TestCase):
         data.readline()
         data.readline()
         data = data.read()
-        self.assertEquals(jsonrpc.loads(data), {"result":"foobar", "error":None, "id":""})
+        self.assertEqual(jsonrpc.loads(data), {"result":"foobar", "error":None, "id":""})
 
